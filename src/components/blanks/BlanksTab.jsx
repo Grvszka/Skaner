@@ -62,7 +62,7 @@ const BlanksTab = ({ files }) => {
 
         <button
           onClick={startAnalysis}
-          className="flex items-center justify-center gap-3 px-8 py-4 bg-accent-cyan hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)]"
+          className="flex items-center justify-center gap-3 px-10 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xl tracking-wide rounded-2xl transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] border-2 border-cyan-400/50"
         >
           <Play className="w-5 h-5 fill-current" />
           Rozpocznij mapowanie ({files.length} plików)
@@ -91,13 +91,15 @@ const BlanksTab = ({ files }) => {
     <div className="space-y-8 animate-in fade-in duration-700 fade-in-0 slide-in-from-bottom-4" role="tabpanel" aria-label="Puste strony">
       
       {uniqueFiles.length > 1 && (
-        <div className="bg-slate-900/50 p-4 shrink-0 rounded-xl border border-slate-800 flex flex-wrap items-center gap-4">
-          <label htmlFor="file-filter-blanks" className="text-slate-400 font-medium">Filtruj zestaw:</label>
+        <div className="bg-blue-950/40 p-5 shrink-0 rounded-2xl border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] flex flex-wrap lg:flex-nowrap items-center justify-between gap-4">
+          <label htmlFor="file-filter-blanks" className="text-blue-100 font-semibold text-lg flex-shrink-0 whitespace-nowrap">
+            Widok wyników dla pliku:
+          </label>
           <select 
             id="file-filter-blanks"
             value={selectedFile}
             onChange={(e) => setSelectedFile(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-accent-cyan focus:border-accent-cyan block w-full sm:max-w-xs p-2.5 transition-colors cursor-pointer"
+            className="bg-slate-950 border-2 border-blue-500/50 text-white font-bold text-base rounded-xl focus:ring-blue-400 focus:border-blue-400 block w-full p-3 transition-colors cursor-pointer shadow-inner flex-grow"
           >
             <option value="all">Podsumowanie całkowite ({uniqueFiles.length} archiwów)</option>
             {uniqueFiles.map(file => (
@@ -141,10 +143,10 @@ const BlanksTab = ({ files }) => {
       <div className="flex flex-col items-center justify-center py-6 bg-slate-900/30 rounded-2xl border border-dashed border-slate-700">
         <button
           onClick={handleDownload}
-          className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-green-400 font-bold rounded-xl transition-all shadow-lg border border-slate-700 hover:border-green-500/50 group w-full max-w-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="flex items-center justify-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-bold text-lg rounded-xl transition-all shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] group w-full max-w-md disabled:bg-slate-800 disabled:text-slate-500 disabled:border-slate-700 disabled:shadow-none disabled:cursor-not-allowed border border-green-400/50"
           disabled={blankPages === 0}
         >
-          <Download className={`w-6 h-6 ${blankPages === 0 ? '' : 'group-hover:scale-110 transition-transform'}`} />
+          <Download className={`w-6 h-6 text-green-100 ${blankPages === 0 ? '' : 'group-hover:scale-110 transition-transform'}`} />
           {blankPages === 0 ? 'Brak pustych stron' : 'Generuj i pobierz czysty plik'}
         </button>
         {blankPages > 0 && <p className="text-slate-500 text-sm mt-4 text-center">Uwaga: Jeśli wgrałeś wiele dokumentów, pobierane będą sekwencyjnie dla każdego z osobna.</p>}

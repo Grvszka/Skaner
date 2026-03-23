@@ -38,7 +38,7 @@ const ColorsTab = ({ files }) => {
         </p>
         <button
           onClick={startAnalysis}
-          className="flex items-center justify-center gap-3 px-8 py-4 bg-accent-purple hover:bg-purple-400 text-slate-950 font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5)]"
+          className="flex items-center justify-center gap-3 px-10 py-5 bg-purple-600 hover:bg-purple-500 text-white font-black text-xl tracking-wide rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] border-2 border-purple-400/50"
         >
           <Play className="w-5 h-5 fill-current" />
           Rozpocznij skanowanie barw ({files.length} plików)
@@ -66,13 +66,15 @@ const ColorsTab = ({ files }) => {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 fade-in-0 slide-in-from-bottom-4" role="tabpanel" aria-label="Kolory">
       {uniqueFiles.length > 1 && (
-        <div className="bg-slate-900/50 p-4 shrink-0 rounded-xl border border-slate-800 flex flex-wrap items-center gap-4">
-          <label htmlFor="file-filter-colors" className="text-slate-400 font-medium">Sprawdź statystyki dla:</label>
+        <div className="bg-blue-950/40 p-5 shrink-0 rounded-2xl border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] flex flex-wrap lg:flex-nowrap items-center justify-between gap-4">
+          <label htmlFor="file-filter-colors" className="text-blue-100 font-semibold text-lg flex-shrink-0 whitespace-nowrap">
+            Widok wyników dla pliku:
+          </label>
           <select 
             id="file-filter-colors"
             value={selectedFile}
             onChange={(e) => setSelectedFile(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-accent-cyan focus:border-accent-cyan block w-full sm:max-w-xs p-2.5 transition-colors cursor-pointer"
+            className="bg-slate-950 border-2 border-blue-500/50 text-white font-bold text-base rounded-xl focus:ring-blue-400 focus:border-blue-400 block w-full p-3 transition-colors cursor-pointer shadow-inner flex-grow"
           >
             <option value="all">Wszystkie dokumenty (Zusammen)</option>
             {uniqueFiles.map(file => (
@@ -122,10 +124,10 @@ const ColorsTab = ({ files }) => {
           <h2 className="text-xl font-semibold text-slate-200">Zapisanie logów skanowania</h2>
           <button
             onClick={handleExport}
-            className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition-all group hover:border-accent-purple w-full max-w-xs"
+            className="flex items-center justify-center gap-3 px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] group border border-purple-400/50 w-full max-w-md text-lg"
           >
-            <Download className="w-5 h-5 text-accent-purple group-hover:scale-110 transition-transform" />
-            <span className="font-medium">Pobierz arkusz .CSV</span>
+            <Download className="w-6 h-6 text-purple-100 group-hover:scale-110 transition-transform" />
+            <span>Pobierz arkusz .CSV</span>
           </button>
         </div>
       </div>

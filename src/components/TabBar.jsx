@@ -11,10 +11,10 @@ const TabBar = ({ activeTab, onTabChange }) => {
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`px-6 py-3 rounded-t-xl font-medium transition-all ${
+          className={`px-8 py-4 text-lg rounded-t-2xl font-bold transition-all ${
             activeTab === tab.id
-              ? 'bg-slate-800 text-cyan-400 border-t border-x border-slate-700 shadow-[0_-4px_12px_rgba(34,211,238,0.05)]'
-              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/80 hover:text-slate-300 border-t border-x border-transparent'
+              ? 'bg-blue-600 text-white border-t-2 border-x-2 border-blue-400 shadow-[0_-10px_20px_rgba(37,99,235,0.2)] z-10 relative'
+              : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-t-2 border-x-2 border-slate-700/50 shadow-inner'
           }`}
           aria-label={tab.label}
           role="tab"

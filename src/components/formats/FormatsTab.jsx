@@ -25,13 +25,15 @@ const FormatsTab = ({ results }) => {
     <div className="space-y-8 animate-in fade-in duration-700 fade-in-0 slide-in-from-bottom-4" role="tabpanel" aria-label="Formaty">
       
       {uniqueFiles.length > 1 && (
-        <div className="bg-slate-900/50 p-4 shrink-0 rounded-xl border border-slate-800 flex flex-wrap items-center gap-4">
-          <label htmlFor="file-filter" className="text-slate-400 font-medium">Pokaż wyniki dla:</label>
+        <div className="bg-blue-950/40 p-5 shrink-0 rounded-2xl border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] flex flex-wrap lg:flex-nowrap items-center justify-between gap-4">
+          <label htmlFor="file-filter" className="text-blue-100 font-semibold text-lg flex-shrink-0 whitespace-nowrap">
+            Widok wyników dla pliku:
+          </label>
           <select 
             id="file-filter"
             value={selectedFile}
             onChange={(e) => setSelectedFile(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-accent-cyan focus:border-accent-cyan block w-full sm:max-w-xs p-2.5 transition-colors cursor-pointer"
+            className="bg-slate-950 border-2 border-blue-500/50 text-white font-bold text-base rounded-xl focus:ring-blue-400 focus:border-blue-400 block w-full p-3 transition-colors cursor-pointer shadow-inner flex-grow"
           >
             <option value="all">Wszystkie wgrane pliki (Podsumowanie)</option>
             {uniqueFiles.map(file => (
