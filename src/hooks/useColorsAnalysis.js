@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import { renderPageToCanvas } from '../utils/pageRenderer';
-import { isPageBlank } from '../utils/blankDetector';
+import { identifyPageColor } from '../utils/colorDetector';
 
-export const useBlanksAnalysis = (files) => {
+export const useColorsAnalysis = (files) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, text: '' });
   const [results, setResults] = useState(null);
-  const [threshold, setThreshold] = useState(99.5);
 
   const startAnalysis = useCallback(async () => {
     if (!files || files.length === 0) return;
@@ -30,18 +29,19 @@ export const useBlanksAnalysis = (files) => {
           setProgress({
             current: i,
             total: numPages,
-            text: `Skupiam się na stronie ${i} z ${numPages} (Plik ${fIndex + 1}/${files.length})`
+            text: `Badanie pikseli barwnych na stronie ${i} z ${numPages} (Plik ${fIndex + 1}/${files.length})`
           });
           
+          // Używamy szerokości domyślnej 200 by wykorzystać potencjalny cache z modułu Puste strony
           const imageData = await renderPageToCanvas(file, i, 200);
-          const isBlank = isPageBlank(imageData, threshold);
+          const { isColor, colorSaturation } = identifyPageColor(imageData, 30, 3);
           
           allResults.push({
             pageNumber: i,
             fileName: file.name,
             fileIndex: fIndex,
-            fileRef: file,
-            isBlank
+            isColor,
+            saturation: colorSaturation
           });
           
           await new Promise(r => setTimeout(r, 0));
@@ -55,7 +55,7 @@ export const useBlanksAnalysis = (files) => {
       setIsAnalyzing(false);
       setProgress({ current: 0, total: 0, text: '' });
     }
-  }, [files, threshold]);
+  }, [files]);
 
-  return { isAnalyzing, progress, results, threshold, setThreshold, startAnalysis };
+  return { isAnalyzing, progress, results, startAnalysis };
 };

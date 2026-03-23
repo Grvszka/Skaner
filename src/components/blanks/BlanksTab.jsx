@@ -52,7 +52,7 @@ const BlanksTab = ({ files }) => {
           <input 
             id="threshold" 
             type="range" 
-            min="90" max="100" 
+            min="90" max="100" step="0.1"
             value={threshold} 
             onChange={e => setThreshold(Number(e.target.value))} 
             className="w-full accent-accent-cyan cursor-grab active:cursor-grabbing"

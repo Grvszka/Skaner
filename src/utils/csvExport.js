@@ -69,3 +69,19 @@ export const exportSummaryCsv = (results) => {
 
   downloadCsv(data, headers, 'analiza_pdf_podsumowanie.csv');
 };
+
+/**
+ * Eksportuje szczegółową listę stron kolorowych do CSV
+ * @param {Array} results - Wyniki analizy barwności
+ */
+export const exportColorsCsv = (results) => {
+  const headers = ['Nr strony', 'Plik', 'Typ', 'Nasycenie (%)'];
+  const data = results.map(r => [
+    r.pageNumber,
+    r.fileName || '-',
+    r.isColor ? 'Kolorowa' : 'Czarno-biała',
+    r.saturation.toFixed(2).replace('.', ',')
+  ]);
+
+  downloadCsv(data, headers, 'analiza_pdf_kolory.csv');
+};

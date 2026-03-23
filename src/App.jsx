@@ -4,6 +4,7 @@ import ProgressBar from './components/ProgressBar';
 import TabBar from './components/TabBar';
 import FormatsTab from './components/formats/FormatsTab';
 import BlanksTab from './components/blanks/BlanksTab';
+import ColorsTab from './components/colors/ColorsTab';
 import { analyzePdf } from './utils/pdfAnalyzer';
 const App = () => {
   const [results, setResults] = useState(null);
@@ -118,11 +119,7 @@ const App = () => {
             
             {activeTab === 'formats' && <FormatsTab results={results} />}
             {activeTab === 'blanks' && <BlanksTab files={files} />}
-            {activeTab === 'colors' && (
-              <div className="p-8 bg-slate-900 rounded-2xl border border-slate-800 text-center text-slate-400">
-                Zakładka "Kolor" - wkrótce...
-              </div>
-            )}
+            {activeTab === 'colors' && <ColorsTab files={files} />}
           </div>
         )}
       </main>

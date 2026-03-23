@@ -1,0 +1,138 @@
+import React, { useState, useMemo } from 'react';
+import { Play, Download, Palette, FileStack, Droplet } from 'lucide-react';
+import { useColorsAnalysis } from '../../hooks/useColorsAnalysis';
+import ColorDetailsTable from './ColorDetailsTable';
+import ColorChart from './ColorChart';
+import ProgressBar from '../ProgressBar';
+import { exportColorsCsv } from '../../utils/csvExport';
+
+const ColorsTab = ({ files }) => {
+  const { isAnalyzing, progress, results, startAnalysis } = useColorsAnalysis(files);
+  const [selectedFile, setSelectedFile] = useState('all');
+
+  const uniqueFiles = useMemo(() => {
+    if (!results) return [];
+    const _files = new Set(results.map(r => r.fileName));
+    return Array.from(_files).filter(Boolean);
+  }, [results]);
+
+  const filteredResults = useMemo(() => {
+    if (!results) return null;
+    if (selectedFile === 'all') return results;
+    return results.filter(r => r.fileName === selectedFile);
+  }, [results, selectedFile]);
+
+  const handleExport = () => {
+    if (filteredResults) {
+      exportColorsCsv(filteredResults);
+    }
+  };
+
+  if (!results && !isAnalyzing) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 bg-slate-900 rounded-2xl border border-slate-800 text-center animate-in fade-in duration-500">
+        <Palette className="w-16 h-16 text-slate-600 mb-6" />
+        <h2 className="text-2xl font-bold text-slate-200 mb-2">Rozpoznawanie Kolorów</h2>
+        <p className="text-slate-400 max-w-md mx-auto mb-8">
+          Przeanalizuję każdą stronę pod kątem nasycenia jej układu barwnego. Rozdzielę dokument na części kolorowe i te wydrukowane bez koloru.
+        </p>
+        <button
+          onClick={startAnalysis}
+          className="flex items-center justify-center gap-3 px-8 py-4 bg-accent-purple hover:bg-purple-400 text-slate-950 font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5)]"
+        >
+          <Play className="w-5 h-5 fill-current" />
+          Rozpocznij skanowanie barw ({files.length} plików)
+        </button>
+      </div>
+    );
+  }
+
+  if (isAnalyzing) {
+    return (
+      <div className="max-w-2xl mx-auto mt-12 space-y-4">
+        <div className="p-8 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl text-center">
+           <Palette className="w-10 h-10 text-slate-600 mb-4 mx-auto animate-pulse" />
+           <p className="text-slate-400 mb-6 font-mono text-sm">{progress.text}</p>
+           <ProgressBar current={progress.current} total={progress.total} />
+        </div>
+      </div>
+    );
+  }
+
+  const totalPages = filteredResults.length;
+  const colorPages = filteredResults.filter(r => r.isColor).length;
+  const bwPages = totalPages - colorPages;
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700 fade-in-0 slide-in-from-bottom-4" role="tabpanel" aria-label="Kolory">
+      {uniqueFiles.length > 1 && (
+        <div className="bg-slate-900/50 p-4 shrink-0 rounded-xl border border-slate-800 flex flex-wrap items-center gap-4">
+          <label htmlFor="file-filter-colors" className="text-slate-400 font-medium">Sprawdź statystyki dla:</label>
+          <select 
+            id="file-filter-colors"
+            value={selectedFile}
+            onChange={(e) => setSelectedFile(e.target.value)}
+            className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-accent-cyan focus:border-accent-cyan block w-full sm:max-w-xs p-2.5 transition-colors cursor-pointer"
+          >
+            <option value="all">Wszystkie dokumenty (Zusammen)</option>
+            {uniqueFiles.map(file => (
+              <option key={file} value={file}>{file}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-lg flex items-center gap-6 transition-transform hover:scale-[1.02]">
+          <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 text-accent-cyan">
+            <FileStack className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">Zsumowane strony</p>
+            <p className="text-3xl font-bold text-slate-100 mt-1 font-mono">{totalPages}</p>
+          </div>
+        </div>
+        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-lg flex items-center gap-6 transition-transform hover:scale-[1.02]">
+          <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+            <Palette className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">Kolorowe</p>
+            <p className="text-3xl font-bold text-slate-100 mt-1 font-mono">{colorPages}</p>
+          </div>
+        </div>
+        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-lg flex items-center gap-6 transition-transform hover:scale-[1.02]">
+          <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-400">
+            <Droplet className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">Czarno-białe / Skala 256</p>
+            <p className="text-3xl font-bold text-slate-100 mt-1 font-mono">{bwPages}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+          <h2 className="text-xl font-semibold mb-6 text-slate-200">Proporcje kolorów w dokumencie</h2>
+          <ColorChart results={filteredResults} />
+        </div>
+        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg flex flex-col justify-center items-center gap-6">
+          <h2 className="text-xl font-semibold text-slate-200">Zapisanie logów skanowania</h2>
+          <button
+            onClick={handleExport}
+            className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition-all group hover:border-accent-purple w-full max-w-xs"
+          >
+            <Download className="w-5 h-5 text-accent-purple group-hover:scale-110 transition-transform" />
+            <span className="font-medium">Pobierz arkusz .CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <ColorDetailsTable results={filteredResults} />
+    </div>
+  );
+};
+
+export default ColorsTab;

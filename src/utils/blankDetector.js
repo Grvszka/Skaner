@@ -1,10 +1,10 @@
 /**
  * Analizuje dane pikseli z canvas i określa jasność
  * @param {ImageData} imageData 
- * @param {number} threshold - tolerancja procentowa (0-100), domyślnie 98
+ * @param {number} threshold - tolerancja procentowa (0-100), domyślnie 99.5
  * @returns {boolean} - true jeśli pusta
  */
-export const isPageBlank = (imageData, threshold = 98) => {
+export const isPageBlank = (imageData, threshold = 99.5) => {
   const data = imageData.data;
   let brightPixels = 0;
   const totalPixels = data.length / 4;
