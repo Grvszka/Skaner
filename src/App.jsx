@@ -1,52 +1,69 @@
 import React, { useState } from 'react';
 import DropZone from './components/DropZone';
 import ProgressBar from './components/ProgressBar';
-import SummaryCards from './components/SummaryCards';
-import FormatChart from './components/FormatChart';
-import PageDetailsTable from './components/PageDetailsTable';
-import ExportButtons from './components/ExportButtons';
+import TabBar from './components/TabBar';
+import FormatsTab from './components/formats/FormatsTab';
+import BlanksTab from './components/blanks/BlanksTab';
 import { analyzePdf } from './utils/pdfAnalyzer';
-
 const App = () => {
   const [results, setResults] = useState(null);
+  const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [info, setInfo] = useState(null);
+  const [activeTab, setActiveTab] = useState('formats');
 
-  const handleFileSelect = async (file) => {
-    if (!file || file.type !== 'application/pdf') {
-      setError('Proszę wybrać poprawny plik PDF.');
+  const handleFilesSelect = async (files) => {
+    if (!files || files.length === 0) {
+      setError('Proszę wybrać poprawne pliki PDF.');
       return;
     }
 
     setIsAnalyzing(true);
     setError(null);
     setResults(null);
+    setFiles([]);
     setProgress({ current: 0, total: 0 });
 
-    if (file.size > 200 * 1024 * 1024) {
-      setInfo('Duży plik — ładowanie może potrwać do minuty.');
+    const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+    if (totalSize > 200 * 1024 * 1024) {
+      setInfo('Duża ilość danych — ładowanie może potrwać dłużej.');
     } else {
       setInfo(null);
     }
     setProgress({ current: 0, total: 0 });
 
     try {
-      const analysisResults = await analyzePdf(file, (current, total) => {
-        setProgress({ current, total });
-      });
-      setResults(analysisResults);
+      let combinedResults = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (files.length > 1) {
+          setInfo(`Analizowanie pliku ${i + 1} z ${files.length}: ${file.name}`);
+        }
+        
+        const fileResults = await analyzePdf(file, (current, total) => {
+          setProgress({ current, total });
+        });
+        
+        combinedResults = [...combinedResults, ...fileResults];
+      }
+      setResults(combinedResults);
+      setFiles(files);
     } catch (err) {
       console.error(err);
-      setError('Wystąpił błąd podczas analizy pliku PDF.');
+      setError('Wystąpił błąd podczas analizy plików PDF.');
     } finally {
       setIsAnalyzing(false);
+      if (files.length > 1) {
+        setInfo(null);
+      }
     }
   };
 
   const handleReset = () => {
     setResults(null);
+    setFiles([]);
     setProgress({ current: 0, total: 0 });
     setError(null);
     setInfo(null);
@@ -78,7 +95,7 @@ const App = () => {
                 {error}
               </div>
             )}
-            <DropZone onFileSelect={handleFileSelect} />
+            <DropZone onFilesSelect={handleFilesSelect} />
           </div>
         )}
 
@@ -97,20 +114,15 @@ const App = () => {
 
         {results && (
           <div className="space-y-8 animate-in fade-in duration-700">
-            <SummaryCards results={results} />
+            <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-                <h2 className="text-xl font-semibold mb-6 text-slate-200">Podział wg formatu</h2>
-                <FormatChart results={results} />
+            {activeTab === 'formats' && <FormatsTab results={results} />}
+            {activeTab === 'blanks' && <BlanksTab files={files} />}
+            {activeTab === 'colors' && (
+              <div className="p-8 bg-slate-900 rounded-2xl border border-slate-800 text-center text-slate-400">
+                Zakładka "Kolor" - wkrótce...
               </div>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg flex flex-col justify-center items-center gap-6">
-                <h2 className="text-xl font-semibold text-slate-200">Eksport danych</h2>
-                <ExportButtons results={results} />
-              </div>
-            </div>
-
-            <PageDetailsTable results={results} />
+            )}
           </div>
         )}
       </main>

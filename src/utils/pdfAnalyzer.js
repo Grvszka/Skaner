@@ -29,6 +29,7 @@ export const analyzePdf = async (file, onProgress) => {
     
     results.push({
       pageNumber: i,
+      fileName: file.name,
       ...classification
     });
 

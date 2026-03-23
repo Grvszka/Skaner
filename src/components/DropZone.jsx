@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, FileText } from 'lucide-react';
 
-const DropZone = ({ onFileSelect }) => {
+const DropZone = ({ onFilesSelect }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragOver = (e) => {
@@ -16,16 +16,16 @@ const DropZone = ({ onFileSelect }) => {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      onFileSelect(file);
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+    if (files.length > 0) {
+      onFilesSelect(files);
     }
   };
 
   const handleChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      onFileSelect(file);
+    const files = Array.from(e.target.files).filter(f => f.type === 'application/pdf');
+    if (files.length > 0) {
+      onFilesSelect(files);
     }
   };
 
@@ -47,6 +47,7 @@ const DropZone = ({ onFileSelect }) => {
         id="file-input"
         type="file"
         accept=".pdf"
+        multiple
         className="hidden"
         onChange={handleChange}
       />
@@ -61,10 +62,10 @@ const DropZone = ({ onFileSelect }) => {
 
       <div className="space-y-2">
         <p className="text-xl font-medium text-slate-100">
-          Przeciągnij i upuść plik PDF
+          Przeciągnij i upuść pliki PDF
         </p>
         <p className="text-slate-400">
-          lub kliknij aby wybrać dokument z dysku
+          lub kliknij aby wybrać dokumenty z dysku
         </p>
       </div>
 

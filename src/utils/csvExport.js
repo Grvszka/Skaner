@@ -29,9 +29,10 @@ const downloadCsv = (data, headers, filename) => {
  * @param {Array} results - Wyniki analizy
  */
 export const exportDetailedCsv = (results) => {
-  const headers = ['Nr strony', 'Format', 'Szerokość (mm)', 'Wysokość (mm)', 'Orientacja', 'Powierzchnia (m²)'];
+  const headers = ['Nr strony', 'Plik', 'Format', 'Szerokość (mm)', 'Wysokość (mm)', 'Orientacja', 'Powierzchnia (m²)'];
   const data = results.map(r => [
     r.pageNumber,
+    r.fileName || '-',
     r.name,
     r.widthMm,
     r.heightMm,

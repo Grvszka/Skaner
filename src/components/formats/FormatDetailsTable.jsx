@@ -42,6 +42,7 @@ const PageDetailsTable = ({ results }) => {
           <thead className="bg-slate-950 text-slate-500 uppercase text-[10px] tracking-[0.15em] font-bold">
             <tr>
               <th className="px-6 py-4 border-b border-slate-800">Nr strony</th>
+              <th className="px-6 py-4 border-b border-slate-800">Plik</th>
               <th className="px-6 py-4 border-b border-slate-800">Format</th>
               <th className="px-6 py-4 border-b border-slate-800">Wymiary (mm)</th>
               <th className="px-6 py-4 border-b border-slate-800 text-center">Orientacja</th>
@@ -52,6 +53,7 @@ const PageDetailsTable = ({ results }) => {
             {currentItems.map((page) => (
               <tr key={page.pageNumber} className="hover:bg-slate-800/30 transition-colors">
                 <td className="px-6 py-3 font-mono text-slate-400">{page.pageNumber}</td>
+                <td className="px-6 py-3 text-slate-300 truncate max-w-[200px]" title={page.fileName}>{page.fileName || '-'}</td>
                 <td className="px-6 py-3 font-semibold text-accent-cyan">{page.name}</td>
                 <td className="px-6 py-3 text-slate-300 font-mono italic">
                   {page.widthMm} × {page.heightMm}
